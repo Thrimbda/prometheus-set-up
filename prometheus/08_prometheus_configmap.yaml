@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: prometheus-system
+data:
+  prometheus.yaml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+
+    scrape_configs:
+    - job_name: 'kubernetes-apiservers'
+
+      kubernetes_sd_configs:
+      - role: endpoints
+
+      scheme: https
+
+      tls_config:
+        ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+
+      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+        action: keep
+        regex: default;kubernetes;https
+
+    - job_name: 'prometheus'
+
+      kubernetes_sd_configs:
+      - role: endpoints
+
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_service_name]
+        regex: prometheus
+        action: keep
+
+    - job_name: 'node-exporter'
+
+      kubernetes_sd_configs:
+      - role: endpoints
+
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_service_name]
+        regex: node-exporter
+        action: keep
+      - source_labels: [__meta_kubernetes_endpoint_hostname]
+        target_label: host_name
+      - source_labels: [__meta_kubernetes_endpoint_node_name]
+        target_label: node
+      - source_labels: [__meta_kubernetes_pod_host_ip]
+        target_label: host_ip
+
+    - job_name: 'kube-state-metrics'
+
+      kubernetes_sd_configs:
+      - role: endpoints
+
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_service_name]
+        regex: kube-state-metrics
+        action: keep
+
+    - job_name: 'kubelet'
+
+      kubernetes_sd_configs:
+      - role: node
+
+      tls_config:
+        # ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        # cert_file: /etc/secret/cert
+        # key_file: /etc/secret/key
+        insecure_skip_verify: true
+
+      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+      scheme: https
+
+    - job_name: 'cadvisor'
+
+      kubernetes_sd_configs:
+      - role: node
+
+      metrics_path: /metrics/cadvisor
+
+      tls_config:
+        # ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        # cert_file: /etc/secret/cert
+        # key_file: /etc/secret/key
+        insecure_skip_verify: true
+
+      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+      scheme: https

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-deployment
+  namespace: prometheus-system
+  labels:
+    app.kubernetes.io/name: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: prometheus
+    spec:
+      containers:
+      - name: prometheus
+        image: quay.io/prometheus/prometheus:v2.22.0
+        imagePullPolicy: IfNotPresent
+        args:
+        - '--config.file=/etc/prometheus/prometheus.yaml'
+        - '--storage.tsdb.path=/prometheus'
+        ports:
+        - name: web
+          containerPort: 9090
+        volumeMounts:
+        - name: conf
+          mountPath: /etc/prometheus
+          readOnly: true
+        - name: data
+          mountPath: /prometheus
+      restartPolicy: Always
+      volumes:
+      - name: conf
+        configMap:
+          name: prometheus-config
+      - name: data
+        emptyDir: {}

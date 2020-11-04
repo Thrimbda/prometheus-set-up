@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+  namespace: prometheus-system
+spec:
+  type: NodePort
+  ports:
+  - name: https
+    port: 9090
+    nodePort: 30900
+  selector:
+    app.kubernetes.io/name: prometheus
