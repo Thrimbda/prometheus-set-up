@@ -40,14 +40,14 @@ spec:
             name: root
             readOnly: true
       volumes:
-        - hostPath:
-            path: /proc
-          name: proc
-        - hostPath:
-            path: /sys
-          name: sys
-        - hostPath:
-            path: /
-          name: root
+      - hostPath:
+          path: /proc
+        name: proc
+      - hostPath:
+          path: /sys
+        name: sys
+      - hostPath:
+          path: /
+        name: root
       nodeSelector:
         kubernetes.io/os: linux
