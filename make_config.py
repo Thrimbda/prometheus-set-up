@@ -17,6 +17,8 @@ kind: ConfigMap
 metadata:
   name: prometheus-config
   namespace: prometheus-system
+  labels:
+    app.kubernetes.io/name: prometheus
 data:
   prometheus.yaml: |
 """
