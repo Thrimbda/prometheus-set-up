@@ -14,3 +14,9 @@ set up the resources by order, enjoy.
 ## How to
 
 [在 K8s 单节点集群上手动搭建 Prometheus](./setup-how-to/setup-how-to.md)
+
+## TODO
+
+- [x] script to make prometheus configuration.
+- [x] how-to document.
+- [ ] script to compact resource declarations.
