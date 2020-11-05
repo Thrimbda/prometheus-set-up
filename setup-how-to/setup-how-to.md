@@ -32,7 +32,7 @@
    3. [Kube-Prometheus](https://github.com/prometheus-operator/kube-prometheus)
 3. 在 K8s 上搭建 Prometheus，即 K8s 负责管理 Prometheus 服务，和上面提到的 Prometheus Operator 不同的是，在这里我们要自己写相关的各类 YAML 配置文件。
 3. 列出如下监控目标：
-   1. Prometheus 
+   1. Prometheus
    2. Node exporter
    3. Kubelet
    4. Cadvisor
@@ -133,7 +133,7 @@ scrape_configs:
   - targets: ['localhost:9100']
 ```
 
-打开 Prometheus 的 web UI，观察到已经新增了一个叫做 node-exporter 的 target，查看一下工作负载（运行了一个可以占满所有核的永远计算斐波那契数列的[程序](https://github.com/Thrimbda/fiber)）：
+打开 Prometheus 的 web UI，观察到已经新增了一个叫做 `node-exporter` 的 target，查看一下工作负载（运行了一个可以占满所有核的永远计算斐波那契数列的[程序](https://github.com/Thrimbda/fiber)）：
 
 ![img](./images/node-load.png)
 
@@ -155,14 +155,14 @@ scrape_configs:
 
 对其中如下几个配置项稍作描述（彼此之间并不一定正交）：
 
-- [](https://prometheus.io/docs/prometheus/2.22/configuration/configuration/#configuration-file)：其中的配置对任何其他配置项都有作用，并作为其他配置中项目的默认值。
-- [](https://prometheus.io/docs/prometheus/2.22/configuration/configuration/#scrape_config)：定义了一个监控任务，描述了 Prometheus 应该从哪以及如何监控这个目标等信息。
-- [](https://prometheus.io/docs/prometheus/2.22/configuration/configuration/#tls_config)：描述了 TLS 配置。
-- [<*_sd_config>](https://prometheus.io/docs/prometheus/2.22/configuration/configuration/#kubernetes_sd_config)：Prometheus 通过这个系列的配置项提供了对一系列预定义监控目标服务发现的配置（sd 代表 service discovery）。
-- [](https://prometheus.io/docs/prometheus/2.22/configuration/configuration/#static_config)：对于 Prometheus 没有预定义的监控目标（比如裸机手动部署的任意服务），可以通过这个配置项去做服务发现，上面我们在做概念验证的时候就用到了这个配置项目。
-- [](https://prometheus.io/docs/prometheus/2.22/configuration/configuration/#relabel_config)：在开始拉取监控目标的各项指标前，可以通过这个配置项对于一些 lable 进行改变，Prometheus 提供了一些预定义的 lable 规则，relable 可以多步进行，在 relable 结束后，以 __ 为前缀的 lable 会被删除。
+- [`<global>`](https://prometheus.io/docs/prometheus/2.22/configuration/configuration/#configuration-file)：其中的配置对任何其他配置项都有作用，并作为其他配置中项目的默认值。
+- [`<scrape_config>`](https://prometheus.io/docs/prometheus/2.22/configuration/configuration/#scrape_config)：定义了一个监控任务，描述了 Prometheus 应该从哪以及如何监控这个目标等信息。
+- [`<tls_config>`](https://prometheus.io/docs/prometheus/2.22/configuration/configuration/#tls_config)：描述了 TLS 配置。
+- [`<*_sd_config>`](https://prometheus.io/docs/prometheus/2.22/configuration/configuration/#kubernetes_sd_config)：Prometheus 通过这个系列的配置项提供了对一系列预定义监控目标服务发现的配置（sd 代表 service discovery）。
+- [`<static_config>`](https://prometheus.io/docs/prometheus/2.22/configuration/configuration/#static_config)：对于 Prometheus 没有预定义的监控目标（比如裸机手动部署的任意服务），可以通过这个配置项去做服务发现，上面我们在做概念验证的时候就用到了这个配置项目。
+- [`<relabel_config>`](https://prometheus.io/docs/prometheus/2.22/configuration/configuration/#relabel_config)：在开始拉取监控目标的各项指标前，可以通过这个配置项对于一些 lable 进行改变，Prometheus 提供了一些预定义的 lable 规则，relable 可以多步进行，在 relable 结束后，以 __ 为前缀的 lable 会被删除。
 
-看起来 Prometheus 中最核心的配置项就是其 <scrape_config> 了，每一个都定义了一个监控任务，类似 namespace 的概念，主要是提供了一个监控目标的聚合，在其中我们通过定义 <*_sd_config> 或者 <static_config> 来告诉 Prometheus 具体从哪些端点去拉取数据，以及如何过滤这些端点。
+看起来 Prometheus 中最核心的配置项就是其 `<scrape_config>` 了，每一个都定义了一个监控任务，类似 namespace 的概念，主要是提供了一个监控目标的聚合，在其中我们通过定义 `<*_sd_config>` 或者 `<static_config>` 来告诉 Prometheus 具体从哪些端点去拉取数据，以及如何过滤这些端点。
 
 接下来通过实战来对这些配置项加深理解！
 
@@ -260,7 +260,7 @@ subjects:
 
 到现在为止，我们已经拥有了实现监控目标的一切前提条件了，那么怎么去驱动 Prometheus 这个强大的引擎充分利用好我们布置好的环境实现监控呢？
 
-结合前文中对 Prometheus 配置的介绍，四个监控目标用四个 <scrape_config>  定义：
+结合前文中对 Prometheus 配置的介绍，四个监控目标用四个 `<scrape_config>`  定义：
 
 对于 node-exporter：
 
@@ -280,13 +280,13 @@ subjects:
 
 由于是在集群内部，因此不需要额外的认证，也不用开 https 访问。
 
-这里通过 node-exporter 的例子对 <relabel_configs> 做进一步的解释：
+这里通过 node-exporter 的例子对 `<relabel_configs>` 做进一步的解释：
 
-label 就是有关某一个端点的属性，而不同的端点可能在同一个 label 下可能有不同的值，<relabel_config> 所做的事情，就是针对这些 label 进行一些修改和过滤的操作，使得我们能够过滤/修改出所需要的端点。
+label 就是有关某一个端点的属性，而不同的端点可能在同一个 label 下可能有不同的值，`<relabel_config>` 所做的事情，就是针对这些 label 进行一些修改和过滤的操作，使得我们能够过滤/修改出所需要的端点。
 
 ![img](./images/node-exporter-target.png)
 
-可以看到，在上面的 config 中，有三个 relabel 动作，其中第一个的意思是，从 __meta_kubernetes_service_name 这个 K8s  服务发现**预定义**的 label 的所有值中，按照给定的正则表达式 "node-exporter" 进行过滤，根据action，保留匹配到的目标端点，丢弃掉剩余相同标签的值。而后面两个 relabel 动作是为了给将 node 和 host_ip 这两个语义标签通过改名的方式保留下来。（还记得吗，双下划线开头的标签最后都会被删除）
+可以看到，在上面的 config 中，有三个 relabel 动作，其中第一个的意思是，从 `__meta_kubernetes_service_name` 这个 K8s  服务发现**预定义**的 label 的所有值中，按照给定的正则表达式 "node-exporter" 进行过滤，根据 `action`，保留匹配到的目标端点，丢弃掉剩余相同标签的值。而后面两个 relabel 动作是为了给将 node 和 host_ip 这两个语义标签通过改名的方式保留下来。（还记得吗，双下划线开头的标签最后都会被删除）
 
 对于 prometheus 自己：
 
@@ -328,7 +328,7 @@ label 就是有关某一个端点的属性，而不同的端点可能在同一�
  scheme: https
 ```
 
-注意到 role 变成了 node，因此 Prometheus 会默认从 <node_ip>:10250/metrics 收集指标，这里多了一个 bearer_token_file 配置项，由于 kubelet 默认不允许匿名访问其指标数据，这里就是用到前面配置的 ServiceAccount 的地方了，这里我们为了方便使用 insecure_skip_verify: true 的方式跳过 TLS 认证。
+注意到 role 变成了 node，因此 Prometheus 会默认从 `<node_ip>:10250/metrics` 收集指标，这里多了一个 `bearer_token_file` 配置项，由于 kubelet 默认不允许匿名访问其指标数据，这里就是用到前面配置的 ServiceAccount 的地方了，这里我们为了方便使用 `insecure_skip_verify: true` 的方式跳过 TLS 认证。
 
 对于 ApiServer，又变得稍微复杂了一点：
 
@@ -347,7 +347,7 @@ scrape_configs:
   regex: default;kubernetes;https
 ```
 
-在这里我们通过 <relabel_config> 完成对于 ApiServer 自身端点的过滤，在提供 token 鉴权的同时要多提供 CA 文件认证身份，这样我们就可以访问到 ApiServer 啦。
+在这里我们通过 `<relabel_config>` 完成对于 ApiServer 自身端点的过滤，在提供 token 鉴权的同时要多提供 CA 文件认证身份，这样我们就可以访问到 ApiServer 啦。
 
 至此我们就完成了 Prometheus 的部署以及对目标端点的监控配置。
 
