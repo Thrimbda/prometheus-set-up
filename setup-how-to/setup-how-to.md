@@ -238,7 +238,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
  name: default
- namespace: prometheus-system
+ namespace: monitoring-system
  labels:
   app.kubernetes.io/name: prometheus
 ---
@@ -255,7 +255,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
  name: default
- namespace: prometheus-system
+ namespace: monitoring-system
 ```
 
 到现在为止，我们已经拥有了实现监控目标的一切前提条件了，那么怎么去驱动 Prometheus 这个强大的引擎充分利用好我们布置好的环境实现监控呢？

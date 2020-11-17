@@ -4,7 +4,7 @@ metadata:
   labels:
     app.kubernetes.io/name: kube-state-metrics
   name: kube-state-metrics
-  namespace: prometheus-system
+  namespace: monitoring-system
 spec:
   type: NodePort
   ports:

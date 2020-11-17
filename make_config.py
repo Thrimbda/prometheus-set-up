@@ -16,7 +16,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: prometheus-config
-  namespace: prometheus-system
+  namespace: monitoring-system
   labels:
     app.kubernetes.io/name: prometheus
 data:
