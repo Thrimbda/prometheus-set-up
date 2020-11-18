@@ -20,7 +20,7 @@ spec:
         image: quay.io/prometheus/prometheus:v2.22.0
         imagePullPolicy: IfNotPresent
         args:
-        - '--config.file=/etc/prometheus/prometheus.yaml'
+        - '--config.file=/etc/prometheus/prometheus-config.yaml'
         - '--storage.tsdb.path=/prometheus'
         ports:
         - name: web
