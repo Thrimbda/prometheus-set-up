@@ -29,6 +29,10 @@ scrape_configs:
   - source_labels: [__meta_kubernetes_service_name]
     regex: prometheus
     action: keep
+  - source_labels: [__meta_kubernetes_endpoint_node_name]
+    target_label: node
+  - source_labels: [__meta_kubernetes_pod_host_ip]
+    target_label: host_ip
 
 - job_name: 'node-exporter'
 
@@ -39,8 +43,6 @@ scrape_configs:
   - source_labels: [__meta_kubernetes_service_name]
     regex: node-exporter
     action: keep
-  - source_labels: [__meta_kubernetes_endpoint_hostname]
-    target_label: host_name
   - source_labels: [__meta_kubernetes_endpoint_node_name]
     target_label: node
   - source_labels: [__meta_kubernetes_pod_host_ip]
@@ -55,6 +57,10 @@ scrape_configs:
   - source_labels: [__meta_kubernetes_service_name]
     regex: kube-state-metrics
     action: keep
+  - source_labels: [__meta_kubernetes_endpoint_node_name]
+    target_label: node
+  - source_labels: [__meta_kubernetes_pod_host_ip]
+    target_label: host_ip
 
 - job_name: 'kubelet'
 
@@ -70,6 +76,12 @@ scrape_configs:
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
 
   scheme: https
+
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_node_name]
+    target_label: node
+  - source_labels: [__meta_kubernetes_node_address_InternalIP]
+    target_label: host_ip
 
 - job_name: 'cadvisor'
 
@@ -87,3 +99,9 @@ scrape_configs:
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
 
   scheme: https
+
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_node_name]
+    target_label: node
+  - source_labels: [__meta_kubernetes_node_address_InternalIP]
+    target_label: host_ip
