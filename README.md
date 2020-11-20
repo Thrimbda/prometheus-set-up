@@ -20,5 +20,5 @@ set up the resources by order, enjoy.
 - [x] script to make prometheus configuration.
 - [x] how-to document.
 - [ ] script to compact resource declarations.
-- [ ] grafana deployment
+- [x] grafana deployment
 - [ ] add non-NodePort option
