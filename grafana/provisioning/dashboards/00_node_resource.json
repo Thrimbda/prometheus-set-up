@@ -67,7 +67,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(node_cpu_seconds_total{node=\"$Node\", mode != \"idle\", mode != \"iowait\", mode !~ \"^(?:guest.*)$\"}[5m])) by (node, cpu)",
+          "expr": "sum(rate(node_cpu_seconds_total{node =~ \"$Node\", mode != \"idle\", mode != \"iowait\", mode !~ \"^(?:guest.*)$\"}[5m])) by (node, cpu)",
           "interval": "",
           "legendFormat": "{{ node }} - cpu - {{ cpu }}",
           "refId": "A"
@@ -163,7 +163,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(node_cpu_seconds_total{node = \"$Node\", mode != \"idle\", mode != \"iowait\", mode !~ \"^(?:guest.*)$\"}[5m])) by (node)",
+          "expr": "sum(rate(node_cpu_seconds_total{node =~ \"$Node\", mode != \"idle\", mode != \"iowait\", mode !~ \"^(?:guest.*)$\"}[5m])) by (node)",
           "interval": "",
           "legendFormat": "{{ node }}",
           "refId": "A"
@@ -259,7 +259,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "node_load5{node = \"$Node\"} / on(node) group_left count(count(node_cpu_seconds_total) without (mode)) by (node)",
+          "expr": "node_load5{node =~ \"$Node\"} / on(node) group_left count(count(node_cpu_seconds_total) without (mode)) by (node)",
           "hide": false,
           "interval": "",
           "legendFormat": "{{ node }}",
@@ -356,7 +356,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "1 - node_memory_MemAvailable_bytes{node = \"$Node\"} / ON(node) GROUP_LEFT node_memory_MemTotal_bytes",
+          "expr": "1 - node_memory_MemAvailable_bytes{node =~ \"$Node\"} / ON(node) GROUP_LEFT node_memory_MemTotal_bytes",
           "interval": "",
           "legendFormat": "{{ node }}",
           "refId": "A"
@@ -391,6 +391,102 @@
         },
         {
           "format": "percentunit",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 18
+      },
+      "hiddenSeries": false,
+      "id": 10,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.3.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "node_filesystem_avail_bytes{node=\"$Node\", mountpoint = \"/\"} / ON(node) GROUP_LEFT node_filesystem_size_bytes{mountpoint = \"/\"}",
+          "interval": "",
+          "legendFormat": "{{ node }}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "node disk saturation",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "percentunit",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
           "label": null,
           "logBase": 1,
           "max": null,
