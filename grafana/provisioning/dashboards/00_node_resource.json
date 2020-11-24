@@ -452,7 +452,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "node_filesystem_avail_bytes{node=\"$Node\", mountpoint = \"/\"} / ON(node) GROUP_LEFT node_filesystem_size_bytes{mountpoint = \"/\"}",
+          "expr": "1 - node_filesystem_avail_bytes{node =~ \"$Node\", mountpoint = \"/\"} / ON(node) GROUP_LEFT node_filesystem_size_bytes{mountpoint = \"/\"}",
           "interval": "",
           "legendFormat": "{{ node }}",
           "refId": "A"
