@@ -29,14 +29,26 @@ spec:
         - name: conf
           mountPath: /etc/grafana
           readOnly: true
-        - name: provisioning
+        - name: provisioning-datasources
           mountPath: /etc/grafana/provisioning/datasources
+          readOnly: true
+        - name: provisioning-dashboards
+          mountPath: /etc/grafana/provisioning/dashboards
+          readOnly: true
+        - name: dashboards
+          mountPath: /etc/dashboards
           readOnly: true
       restartPolicy: Always
       volumes:
       - name: conf
         configMap:
           name: grafana-config
-      - name: provisioning
+      - name: provisioning-datasources
         configMap:
-          name: grafana-provisioning
+          name: grafana-provisioning-datasources
+      - name: provisioning-dashboards
+        configMap:
+          name: grafana-provisioning-dashboards
+      - name: dashboards
+        configMap:
+          name: grafana-dashboards-general

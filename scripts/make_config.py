@@ -13,26 +13,38 @@ from typing import Dict, Iterable, List
 
 
 @dataclass
-class ConfigmapData(object):
+class File:
     name: str
-    namespace: str
-    labels: Dict[str, str]
-    file_name: str
-    file_path: Path = field(init=False)
-    file_content: str = field(init=False)
+    path: Path
+    content: str
 
-    def __post_init__(self):
-        self.file_path = Path(self.file_name)
+    def __init__(self, str_path: str) -> None:
+        self.path = Path(str_path)
+        self.name = self.path.name
 
-        with self.file_path.open('r') as conf_file:
+        with self.path.open('r') as conf_file:
             conf_lines = conf_file.readlines()
 
         indentation = ' ' * 4
 
-        self.file_content = ''.join(
+        self.content = ''.join(
             f'{indentation}{line}' if line.strip() else '\n'
             for line in conf_lines
         )
+
+
+@dataclass
+class ConfigmapData:
+    name: str
+    namespace: str
+    labels: Dict[str, str]
+    files: List[File]
+
+    def __init__(self, name: str, namespace: str, labels: Dict[str, str], file_paths: List[str]) -> None:
+        self.name = name
+        self.namespace = namespace
+        self.labels = labels
+        self.files = [File(str_path) for str_path in file_paths]
 
     def make_config(self) -> str:
         newline = '\n'
@@ -45,8 +57,7 @@ metadata:
   labels:
     {newline.join(f'{k}: {v}' for k, v in self.labels.items())}
 data:
-  {self.file_path.name}: |
-{self.file_content}
+{newline.join(f'  {file.name}: |{newline}{file.content}' for file in self.files)}
 """
 
 

@@ -2,4 +2,5 @@ name: prometheus-config
 namespace: monitoring-system
 labels:
   app.kubernetes.io/name: prometheus
-file_name: prometheus/prometheus-config.yaml
+file_paths:
+- prometheus/prometheus-config.yaml

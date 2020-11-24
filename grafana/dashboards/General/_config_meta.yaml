@@ -1,6 +1,6 @@
-name: grafana-config
+name: grafana-dashboards-general
 namespace: monitoring-system
 labels:
   app.kubernetes.io/name: grafana
 file_paths:
-- grafana/config.ini
+- grafana/dashboards/General/00_node_resource.json
