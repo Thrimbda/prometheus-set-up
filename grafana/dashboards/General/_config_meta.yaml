@@ -4,3 +4,4 @@ labels:
   app.kubernetes.io/name: grafana
 file_paths:
 - grafana/dashboards/General/00_node_resource.json
+- grafana/dashboards/General/01_container_resource.json
