@@ -57,10 +57,6 @@ scrape_configs:
   - source_labels: [__meta_kubernetes_service_name]
     regex: kube-state-metrics
     action: keep
-  - source_labels: [__meta_kubernetes_endpoint_node_name]
-    target_label: node
-  - source_labels: [__meta_kubernetes_pod_host_ip]
-    target_label: host_ip
 
 - job_name: 'kubelet'
 

@@ -19,6 +19,13 @@ spec:
       - name: prometheus
         image: quay.io/prometheus/prometheus:v2.22.0
         imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "1"
+          limits:
+            memory: "2Gi"
+            cpu: "1.5"
         args:
         - '--config.file=/etc/prometheus/prometheus-config.yaml'
         - '--storage.tsdb.path=/prometheus'
